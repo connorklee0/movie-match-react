@@ -1,8 +1,13 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 const MovieCard = ({ movie, isLoading }) => {
+  const navigate = useNavigate();
   function movieInfo() {
-    console.log("open movie info");
+    const movieId = movie.imdbID;
+    navigate(`/${movieId}`, {
+      replace: true,
+    });
   }
 
   return (
@@ -22,7 +27,12 @@ const MovieCard = ({ movie, isLoading }) => {
         </div>
       ) : (
         <div className="movie">
-          <figure className="movie__img--wrapper" onClick={movieInfo}>
+          <figure
+            className="movie__img--wrapper"
+            onClick={() => {
+              movieInfo();
+            }}
+          >
             <img
               className="movie__img"
               src={movie.Poster}

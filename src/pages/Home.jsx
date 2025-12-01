@@ -6,7 +6,6 @@ import headerImg from "../assets/header.png";
 const Home = () => {
   return (
     <>
-      <Nav />
       <section id="home">
         <header className="header">
           <h1 className="header--title title">

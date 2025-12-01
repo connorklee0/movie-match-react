@@ -9,7 +9,6 @@ const SearchMovies = () => {
 
   return (
     <>
-      <Nav />
       <header className="header">
         <h1 className="header--title title">
           Browse <span className="highlight">Movies</span>

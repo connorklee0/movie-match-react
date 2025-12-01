@@ -31,7 +31,7 @@ const Nav = () => {
           }`}
         >
           <p className="nav__link--anchor" onClick={() => navigate("/search/")}>
-            Find Movies
+            Browse Movies
           </p>
         </li>
       </ul>

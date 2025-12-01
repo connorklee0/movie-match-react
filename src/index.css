@@ -7,6 +7,7 @@
   --button: #ff006e;
   --button-hover: #d1005c;
   --highlight: #00b4d8;
+  --error: #b10c53;
   --accent: #7209b7;
   --input-background: #1a1f3a;
   --input-border: #7209b7;
@@ -79,13 +80,30 @@ li {
   list-style-type: none;
 }
 
-.highlight {
-  color: var(--highlight);
+.highlight,
+.error {
   font-weight: bold;
 }
 
-.hidden {
-  display: none !important;
+.highlight {
+  color: var(--highlight);
+}
+
+.error {
+  color: var(--error);
+}
+
+.skeleton {
+  border-radius: 8px;
+  opacity: 0.2;
+  background-color: var(--highlight);
+}
+
+.row {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
 }
 
 /* NAV */
@@ -245,12 +263,22 @@ header {
   font-size: 52px;
 }
 
-.results__loading {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-top: 60px;
-  font-size: 60px;
+.results__loading--spinner {
+  animation: rotate 600ms infinite linear;
+  position: absolute;
+  font-size: 100px;
+  margin-top: 120px;
+  left: 45%;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* MOVIES */
@@ -317,12 +345,6 @@ header {
   color: var(--primary-text);
 }
 
-.skeleton {
-  border-radius: 4px;
-  opacity: 0.5;
-  background-color: var(--highlight);
-}
-
 .skeleton--img {
   height: 300px;
   width: 180px;
@@ -336,5 +358,56 @@ header {
 .skeleton--year {
   width: 80px;
   height: 14px;
-  border-radius: 4px;
+}
+
+/* MOVIE INFO */
+
+.info__back {
+  font-size: 36px;
+  cursor: pointer;
+}
+
+.movie__selected--error {
+  font-size: 52px;
+  margin: 24px 0;
+  text-align: center;
+}
+
+.movie__selected {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 40px;
+}
+
+.movie__selected--info {
+  margin: 0 20px;
+}
+
+.movie__selected--title {
+  font-size: 68px;
+}
+
+.movie__selected--stat {
+  color: var(--highlight);
+  font-size: 24px;
+  margin: 8px 0;
+}
+
+.selected__content {
+  color: var(--primary-text);
+}
+
+.movie__selected--description {
+  margin-top: 20px;
+  font-size: 32px;
+}
+
+.movie__selected--info__skeleton {
+  width: 100%;
+  height: 400px;
+}
+
+.movie__selected--description__skeleton {
+  width: 100%;
+  height: 120px;
 }

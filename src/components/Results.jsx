@@ -1,12 +1,30 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import MovieCard from "./MovieCard";
+import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Results = ({ title }) => {
-  const [filter, setFilter] = useState();
+  const [filter, setFilter] = useState("DEFAULT");
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+
+  function applySorting(moviesToSort, sortFilter) {
+    if (!sortFilter || sortFilter === "DEFAULT") return moviesToSort;
+
+    return [...moviesToSort].sort((a, b) => {
+      const yearA = parseInt(a.Year.toString().match(/\d{4}/)?.[0] || "0");
+      const yearB = parseInt(b.Year.toString().match(/\d{4}/)?.[0] || "0");
+      return sortFilter === "LOW_TO_HIGH" ? yearA - yearB : yearB - yearA;
+    });
+  }
+
+  function renderMovies() {
+    return movies.map((movie, index) => (
+      <MovieCard movie={movie} key={index} isLoading={isLoading} />
+    ));
+  }
 
   async function fetchMovies() {
     setIsLoading(true);
@@ -17,7 +35,9 @@ const Results = ({ title }) => {
     );
 
     if (data.Response === "True") {
-      setMovies(data["Search"].slice(0, 6));
+      const fetchedMovies = data["Search"].slice(0, 6);
+      const sortedMovies = applySorting(fetchedMovies, filter);
+      setMovies(sortedMovies);
       setError("");
     } else {
       setError(data.Error);
@@ -30,39 +50,12 @@ const Results = ({ title }) => {
     fetchMovies();
   }, [title]);
 
-  function renderMovies() {
-    return movies.map((movie, index) => (
-      <MovieCard movie={movie} key={index} isLoading={isLoading} />
-    ));
-  }
-
-  function sortMovies(event) {
-    console.log(event);
-  }
-  //     if (filter === "LOW_TO_HIGH") {
-  //       return movies.sort((a, b) => {
-  //         const yearA = parseInt(a.Year.match(/\d{4}/)?.[0] || "0");
-  //         const yearB = parseInt(b.Year.match(/\d{4}/)?.[0] || "0");
-  //         return yearA - yearB;
-  //       });
-  //     } else if (filter === "HIGH_TO_LOW") {
-  //       return movies.sort((a, b) => {
-  //         const yearA = parseInt(a.Year.match(/\d{4}/)?.[0] || "0");
-  //         const yearB = parseInt(b.Year.match(/\d{4}/)?.[0] || "0");
-  //         return yearB - yearA;
-  //       });
-  //     } else {
-  //       return movies;
-  //     }
-  //   }
-
-  //   function filterMovies(event) {
-  //     const filter = event.target.value;
-  //     const storedSearch = localStorage.getItem("search"); // Get fresh search value
-
-  //     localStorage.setItem("filter", filter);
-  //     renderMovies(storedSearch);
-  //   }
+  useEffect(() => {
+    if (movies.length > 0) {
+      const sortedMovies = applySorting(movies, filter);
+      setMovies(sortedMovies);
+    }
+  }, [filter]);
 
   return (
     <section className="results">
@@ -74,29 +67,38 @@ const Results = ({ title }) => {
         <select
           name=""
           id="filter"
-          defaultValue={"default"}
-          onChange={(e) => sortMovies(e)}
+          defaultValue={filter}
+          onChange={(e) => setFilter(e.target.value)}
         >
-          <option value="default" disabled>
+          <option value="DEFAULT" disabled>
             Sort by Year
           </option>
           <option value="LOW_TO_HIGH">Year, Oldest to Newest</option>
           <option value="HIGH_TO_LOW">Year, Newest to Oldest</option>
         </select>
       </div>
-      <div className="movies__list">
-        {!title && (
-          <div className="highlight results__load--text">
-            Search a movie title to get started!
-          </div>
-        )}
+      {isLoading && (
+        <FontAwesomeIcon
+          icon={faSpinner}
+          className="results__loading--spinner"
+        />
+      )}
 
-        {title && error && (
-          <div className="highlight results__load--text">{error}</div>
-        )}
+      {!isLoading && (
+        <div className="movies__list">
+          {!title && (
+            <div className="highlight results__load--text">
+              Search a movie title to get started!
+            </div>
+          )}
 
-        {title && !error && renderMovies()}
-      </div>
+          {title && error && (
+            <div className="error results__load--text">Error: {error}</div>
+          )}
+
+          {title && !error && renderMovies()}
+        </div>
+      )}
     </section>
   );
 };

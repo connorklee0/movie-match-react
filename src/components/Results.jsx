@@ -31,7 +31,7 @@ const Results = ({ title }) => {
 
     // fetch API data
     const { data } = await axios.get(
-      `http://www.omdbapi.com/?apikey=b77fdfec&s=${title}`
+      `https://www.omdbapi.com/?apikey=b77fdfec&s=${title}`
     );
 
     if (data.Response === "True") {
